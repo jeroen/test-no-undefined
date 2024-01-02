@@ -11,7 +11,7 @@ for pkg in sources/*.tar.gz; do
 	R CMD INSTALL $pkg > out.log 2>&1 || FAIL="FAILED";
 	echo "::group::${pkg_name} $FAIL"
 	if [ "$FAIL" = "FAILED" ]; then
-		tail -n500 out.log
+		tail -n100 out.log
 	else
 		tail -n1 out.log
 	fi
