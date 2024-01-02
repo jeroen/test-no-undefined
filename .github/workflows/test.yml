@@ -1,0 +1,26 @@
+name: Test building some packages
+
+on:
+  push:
+    branches:
+    workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare macOS system
+        if: runner.os == 'macos'
+        uses: r-universe-org/prepare-macos@master
+
+      - name: Install R
+        uses: r-universe-org/actions/setup-r@master
+        id: install-r
+
+      - name: Test building R packages
+        run: |
+          sed -i.bak 's/-undefined dynamic_lookup//g' $(R RHOME)/etc/Makeconf
+          ./tests.sh
