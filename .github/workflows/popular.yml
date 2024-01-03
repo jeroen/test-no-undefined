@@ -7,6 +7,11 @@ on:
 
 jobs:
   test:
+    name: Test ${{ matrix.owner }} packages
+    strategy:
+      fail-fast: false
+      matrix:
+        owner: [ popular, jeroen, eddelbuettel, gaborcsardi, r-forge ]
     runs-on: macos-latest
     timeout-minutes: 600
     steps:
@@ -25,3 +30,5 @@ jobs:
         run: |
           sed -i.bak 's/-undefined dynamic_lookup//g' $(R RHOME)/etc/Makeconf
           ./tests.sh
+        env:
+          owner: ${{ matrix.owner }}

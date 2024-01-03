@@ -1,10 +1,18 @@
 # Get popular CRAN packages
 options(repos = c(CRAN='https://cloud.r-project.org'))
-deps <- tools::package_dependencies(reverse = TRUE)
-popular <- names(deps)[order(sapply(deps, length), decreasing = TRUE)]
+install.packages("jsonlite", quiet = TRUE)
+owner <- Sys.getenv("owner")
+pkgs <- if(owner == 'popular'){
+	deps <- tools::package_dependencies(reverse = TRUE)
+	head(names(deps)[order(sapply(deps, length), decreasing = TRUE)], 1000)
+} else {
+	url <- sprintf('https://%s.r-universe.dev/api/packages?all=1', owner)
+	jsonlite::fromJSON(url)$Package
+}
+
 avail <- as.data.frame(available.packages())
 srcpkgs <- avail[avail$NeedsCompilation == 'yes', 'Package']
-pkgs <- sort(intersect(srcpkgs, head(popular, 1000)))
+pkgs <- sort(intersect(srcpkgs, pkgs))
 
 # Allow bioc dependencies
 setRepositories(ind=1:4)

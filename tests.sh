@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 echo "::group::Prepare: download sources"
-Rscript download.R
+Rscript download.R "$1"
 echo "::endgroup::"
 
 # Build from source
